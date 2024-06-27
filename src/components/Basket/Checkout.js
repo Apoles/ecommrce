@@ -11,6 +11,7 @@ const CheckoutCard = () => {
   const user = useSelector((state) => state.auth);
 
   console.log(cart);
+  console.log(user);
 
   const [formData, setFormData] = useState({
     name: '',
