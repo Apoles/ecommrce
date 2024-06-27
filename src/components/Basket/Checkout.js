@@ -9,9 +9,11 @@ const CheckoutCard = () => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
   const user = useSelector((state) => state.auth);
+  const den = useSelector((state) => state.payment);
 
   console.log(cart);
   console.log(user);
+  console.log(payment);
 
   const [formData, setFormData] = useState({
     name: '',
