@@ -1,385 +1,430 @@
-import Link from 'next/link';
+import React, { useState } from 'react';
 import MyInput from '../MyInput';
 import Summary from './Summary';
-import { useState } from 'react';
+import { PlusIcon, CalendarDaysIcon, InformationCircleIcon } from '@heroicons/react/24/solid';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateFormData, updatePaymentData, updateUserData } from '@/Store/paymentSlice';
 
 const CheckoutCard = () => {
-  const [items, setItems] = useState([
-    {
-      id: 1,
-      title: 'Kulaklık',
-      description: 'dolar ipsum',
-      image: '/bir.jpg',
-      price: 100,
-      quantity: 1,
-    },
-    {
-      id: 1,
-      title: 'Ürün 1',
-      description: 'Bu bir ürün açıklamasıdır.',
-      image: '/iki.jpg',
-      price: 100,
-      quantity: 1,
-    },
-    {
-      id: 1,
-      title: 'Ürün 1',
-      description: 'Bu bir ürün açıklamasıdır.',
-      image: '/favicon.ico',
-      price: 100,
-      quantity: 1,
-    },
-  ]);
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart);
+  const user = useSelector((state) => state.auth);
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    country: 'United States',
+    city: 'San Francisco',
+    phoneNumber: '',
+    address: '',
+    companyName: '',
+    vatNumber: '',
+  });
+
+  const [paymentData, setPaymentData] = useState({
+    fullName: '',
+    cardNumber: '',
+    cardExpiration: '',
+    cvv: '',
+  });
+
+  const [formErrors, setFormErrors] = useState({
+    name: '',
+    email: '',
+    phoneNumber: '',
+    address: '',
+    companyName: '',
+    vatNumber: '',
+    fullName: '',
+    cardNumber: '',
+    cardExpiration: '',
+    cvv: '',
+  });
+
+  const handleChangeForm = (e) => {
+    const { id, value } = e.target;
+    setFormData({
+      ...formData,
+      [id]: value,
+    });
+    // Clear previous error message if any
+    setFormErrors({
+      ...formErrors,
+      [id]: '',
+    });
+  };
+
+  const handleChangePayment = (e) => {
+    const { id, value } = e.target;
+    setPaymentData({
+      ...paymentData,
+      [id]: value,
+    });
+    // Clear previous error message if any
+    setFormErrors({
+      ...formErrors,
+      [id]: '',
+    });
+  };
+
+  const validateForm = () => {
+    let isValid = true;
+
+    // Validate full name
+    if (paymentData.fullName.trim() === '') {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        fullName: 'Please enter your full name as it appears on the card.',
+      }));
+      isValid = false;
+    }
+
+    // Validate companyName
+    if (formData.companyName.trim() === '' || !isValidEmpty(formData.companyName)) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        companyName: 'Required .',
+      }));
+      isValid = false;
+    }
+
+    // Validate card expiration
+    if (!isValidCardExpiration(paymentData.cardExpiration.trim())) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        cardExpiration: 'Please enter a valid expiration date (mm/yy format).',
+      }));
+      isValid = false;
+    }
+
+    // Validate vatNumber
+
+    if (formData.vatNumber.trim() === '' || !isValidEmpty(formData.vatNumber)) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        vatNumber: 'Required .',
+      }));
+      isValid = false;
+    }
+
+    // Validate address
+    if (formData.address.trim() === '' || !isValidEmpty(formData.name)) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        address: 'Required .',
+      }));
+      isValid = false;
+    }
+
+    //Validate name
+    if (validateForm.name.trim() === '') {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        name: 'Please enter your full name .',
+      }));
+      isValid = false;
+    }
+
+    // Validate email
+    if (formData.email.trim() === '' || !isValidEmail(formData.email)) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        email: 'Please enter a valid email.',
+      }));
+      isValid = false;
+    }
+
+    // Validate phone number
+    if (isNaN(formData.phoneNumber.trim()) || formData.phoneNumber.trim() === '') {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        phoneNumber: 'Please enter a valid phone number.',
+      }));
+      isValid = false;
+    }
+
+    // Validate card number
+    if (!isValidCardNumber(paymentData.cardNumber.trim())) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        cardNumber: 'Please enter a valid card number.',
+      }));
+      isValid = false;
+    }
+
+    // Validate CVV
+    if (isNaN(paymentData.cvv.trim()) || paymentData.cvv.trim().length !== 3) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        cvv: 'Please enter a valid CVV.',
+      }));
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  const isValidEmpty = (text) => {
+    const regex = /.+/;
+    return regex.test(text);
+  };
+  const isValidText = (text) => {
+    const regex = /^[a-zA-Z]+$/g;
+    return regex.test(text);
+  };
+  const isValidEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  const isValidCardNumber = (cardNumber) => {
+    const regex = /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|9[0-9]{15})$/;
+    return regex.test(cardNumber);
+  };
+
+  const isValidCardExpiration = (expiration) => {
+    const regex = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/;
+
+    if (!regex.test(expiration)) return false;
+
+    // Check if it's a valid future date
+    const today = new Date();
+    const [month, year] = expiration.split('/');
+    const cardExpirationDate = new Date(`20${year}`, month - 1);
+
+    return cardExpirationDate > today;
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      dispatch(updateFormData(formData));
+      dispatch(updatePaymentData(paymentData));
+      dispatch(
+        updateUserData({
+          username: user.loggedIn.user.firstName,
+          email: user.loggedIn.user.email,
+          totalAmount: cart.totalAmount,
+          savings: cart.savings,
+          storePickup: 100,
+          product: cart.data,
+        })
+      );
+    }
+  };
+
   return (
-    <section className='bg-white py-8 antialiased  md:py-16'>
-      <form action='#' className='mx-auto max-w-screen-xl px-4 2xl:px-0'>
-        <div className='mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12 xl:gap-16'>
-          <div className='min-w-0 flex-1 space-y-8'>
-            <div className='space-y-4'>
-              <h2 className='text-xl font-semibold text-gray-900 '>Delivery Details</h2>
-
-              <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-                <div>
-                  <label htmlFor='your_name' className='mb-2 block text-sm font-medium text-gray-900 '>
-                    {' '}
-                    Your name{' '}
-                  </label>
-                  <MyInput type='text' id='text' placeholder='Abdullah Gümüş' required></MyInput>
-                </div>
-
-                <div>
-                  <label htmlFor='your_email' className='mb-2 block text-sm font-medium text-gray-900 '>
-                    Your email*
-                  </label>
-                  <MyInput type='text' id='text' placeholder='abdullahgumus14@hotmail.com' required></MyInput>
-                </div>
-
-                <div>
-                  <div className='mb-2 flex items-center gap-2'>
-                    <label htmlFor='select-country-input-3' className='block text-sm font-medium text-gray-900 '>
-                      Country*
-                    </label>
-                  </div>
-                  <select
-                    id='select-country-input-3'
-                    className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 '
-                  >
-                    <option selected>United States</option>
-                    <option value='AS'>Australia</option>
-                    <option value='FR'>France</option>
-                    <option value='ES'>Spain</option>
-                    <option value='UK'>United Kingdom</option>
-                  </select>
-                </div>
-
-                <div>
-                  <div className='mb-2 flex items-center gap-2'>
-                    <label htmlFor='select-city-input-3' className='block text-sm font-medium text-gray-900 '>
-                      {' '}
-                      City*{' '}
-                    </label>
-                  </div>
-                  <select
-                    id='select-city-input-3'
-                    className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-50'
-                  >
-                    <option selected>San Francisco</option>
-                    <option value='NY'>New York</option>
-                    <option value='LA'>Los Angeles</option>
-                    <option value='CH'>Chicago</option>
-                    <option value='HU'>Houston</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor='phone-input-3' className='mb-2 block text-sm font-medium text-gray-900 '>
-                    Phone Number*
-                  </label>
-                  <div className='flex items-center'>
-                    <div className='relative w-full'>
-                      <MyInput type='text' id='phone' placeholder='05416945683' required></MyInput>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor='email' className='mb-2 block text-sm font-medium text-gray-900 '>
-                    {' '}
-                    Adress
-                  </label>
-                  <MyInput
-                    type='text'
-                    id='adres'
-                    placeholder='Sinanbey Mah. Ahmet Akyolu Cad. No 64 / 10 İnegöl/Bursa'
-                    required
-                  ></MyInput>
-                </div>
-
-                <div>
-                  <label htmlFor='company_name' className='mb-2 block text-sm font-medium text-gray-900 '>
-                    {' '}
-                    Company name{' '}
-                  </label>
-                  <MyInput type='text' id='companyName' placeholder='Alttantire' required></MyInput>
-                </div>
-
-                <div>
-                  <label htmlFor='vat_number' className='mb-2 block text-sm font-medium text-gray-900 '>
-                    {' '}
-                    VAT number{' '}
-                  </label>
-                  <MyInput type='text' id='vatNumber' placeholder='DE42313253' required></MyInput>
-                </div>
-
-                <div className='sm:col-span-2'>
-                  <button
-                    type='submit'
-                    className='flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100  '
-                  >
-                    <svg
-                      className='h-5 w-5'
-                      aria-hidden='true'
-                      xmlns='http://www.w3.org/2000/svg'
-                      width='24'
-                      height='24'
-                      fill='none'
-                      viewBox='0 0 24 24'
-                    >
-                      <path
-                        stroke='currentColor'
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
-                        stroke-width='2'
-                        d='M5 12h14m-7 7V5'
-                      />
-                    </svg>
-                    Add new address
-                  </button>
-                </div>
+    <section className='bg-white py-8 antialiased md:py-16'>
+      <div className='mx-auto max-w-screen-xl px-4 2xl:px-0 mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12 xl:gap-16'>
+        <div className='w-2/3 mx-auto'>
+          <div className='space-y-4'>
+            <h2 className='text-xl font-semibold text-gray-900'>Delivery Details</h2>
+            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+              <div>
+                <label htmlFor='name' className='mb-2 block text-sm font-medium text-gray-900'>
+                  Your name
+                </label>
+                <MyInput onChange={handleChangeForm} type='text' id='name' placeholder='Abdullah Gümüş' required />
+                {formErrors.name && <p className='text-red-500 text-sm mt-1'>{formErrors.name}</p>}
               </div>
-            </div>
-
-            <div className='space-y-4'>
-              <h3 className='text-xl font-semibold text-gray-900 '>Payment</h3>
-
-              <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
-                <div className='rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4'>
-                  <div className='flex items-start'>
-                    <div className='flex h-5 items-center'>
-                      <input
-                        id='credit-card'
-                        aria-describedby='credit-card-text'
-                        type='radio'
-                        name='payment-method'
-                        value=''
-                        className='h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 '
-                        checked
-                      />
-                    </div>
-
-                    <div className='ms-4 text-sm'>
-                      <label htmlFor='credit-card' className='font-medium leading-none text-gray-900 '>
-                        {' '}
-                        Credit Card{' '}
-                      </label>
-                      <p id='credit-card-text' className='mt-1 text-xs font-normal text-gray-500 '>
-                        Pay with your credit card
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className='mt-4 flex items-center gap-2'>
-                    <button type='button' className='text-sm font-medium text-gray-500 hover:text-gray-900  '>
-                      Delete
-                    </button>
-
-                    <div className='h-3 w-px shrink-0 bg-gray-200 '></div>
-
-                    <button type='button' className='text-sm font-medium text-gray-500 hover:text-gray-900  '>
-                      Edit
-                    </button>
-                  </div>
-                </div>
-
-                <div className='rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4  '>
-                  <div className='flex items-start'>
-                    <div className='flex h-5 items-center'>
-                      <input
-                        id='pay-on-delivery'
-                        aria-describedby='pay-on-delivery-text'
-                        type='radio'
-                        name='payment-method'
-                        value=''
-                        className='h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600    '
-                      />
-                    </div>
-
-                    <div className='ms-4 text-sm'>
-                      <label htmlFor='pay-on-delivery' className='font-medium leading-none text-gray-900 '>
-                        {' '}
-                        Payment on delivery{' '}
-                      </label>
-                      <p id='pay-on-delivery-text' className='mt-1 text-xs font-normal text-gray-500 '>
-                        +$15 payment processing fee
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className='mt-4 flex items-center gap-2'>
-                    <button type='button' className='text-sm font-medium text-gray-500 hover:text-gray-900  '>
-                      Delete
-                    </button>
-
-                    <div className='h-3 w-px shrink-0 bg-gray-200 '></div>
-
-                    <button type='button' className='text-sm font-medium text-gray-500 hover:text-gray-900  '>
-                      Edit
-                    </button>
-                  </div>
-                </div>
-
-                <div className='rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4  '>
-                  <div className='flex items-start'>
-                    <div className='flex h-5 items-center'>
-                      <input
-                        id='paypal-2'
-                        aria-describedby='paypal-text'
-                        type='radio'
-                        name='payment-method'
-                        value=''
-                        className='h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600    '
-                      />
-                    </div>
-
-                    <div className='ms-4 text-sm'>
-                      <label htmlFor='paypal-2' className='font-medium leading-none text-gray-900 '>
-                        {' '}
-                        Paypal account{' '}
-                      </label>
-                      <p id='paypal-text' className='mt-1 text-xs font-normal text-gray-500 '>
-                        Connect to your account
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className='mt-4 flex items-center gap-2'>
-                    <button type='button' className='text-sm font-medium text-gray-500 hover:text-gray-900  '>
-                      Delete
-                    </button>
-
-                    <div className='h-3 w-px shrink-0 bg-gray-200 '></div>
-
-                    <button type='button' className='text-sm font-medium text-gray-500 hover:text-gray-900  '>
-                      Edit
-                    </button>
-                  </div>
-                </div>
+              <div>
+                <label htmlFor='email' className='mb-2 block text-sm font-medium text-gray-900'>
+                  Your email*
+                </label>
+                <MyInput
+                  onChange={handleChangeForm}
+                  type='text'
+                  id='email'
+                  placeholder='abdullahgumus14@hotmail.com'
+                  required
+                />
+                {formErrors.email && <p className='text-red-500 text-sm mt-1'>{formErrors.email}</p>}
               </div>
-            </div>
-
-            <div className='space-y-4'>
-              <h3 className='text-xl font-semibold text-gray-900 '>Delivery Methods</h3>
-
-              <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
-                <div className='rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4  '>
-                  <div className='flex items-start'>
-                    <div className='flex h-5 items-center'>
-                      <input
-                        id='dhl'
-                        aria-describedby='dhl-text'
-                        type='radio'
-                        name='delivery-method'
-                        value=''
-                        className='h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600    '
-                        checked
-                      />
-                    </div>
-
-                    <div className='ms-4 text-sm'>
-                      <label htmlFor='dhl' className='font-medium leading-none text-gray-900 '>
-                        {' '}
-                        $15 - DHL Fast Delivery{' '}
-                      </label>
-                      <p id='dhl-text' className='mt-1 text-xs font-normal text-gray-500 '>
-                        Get it by Tommorow
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className='rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4  '>
-                  <div className='flex items-start'>
-                    <div className='flex h-5 items-center'>
-                      <input
-                        id='fedex'
-                        aria-describedby='fedex-text'
-                        type='radio'
-                        name='delivery-method'
-                        value=''
-                        className='h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600    '
-                      />
-                    </div>
-
-                    <div className='ms-4 text-sm'>
-                      <label htmlFor='fedex' className='font-medium leading-none text-gray-900 '>
-                        {' '}
-                        Free Delivery - FedEx{' '}
-                      </label>
-                      <p id='fedex-text' className='mt-1 text-xs font-normal text-gray-500 '>
-                        Get it by Friday, 13 Dec 2023
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className='rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4  '>
-                  <div className='flex items-start'>
-                    <div className='flex h-5 items-center'>
-                      <input
-                        id='express'
-                        aria-describedby='express-text'
-                        type='radio'
-                        name='delivery-method'
-                        value=''
-                        className='h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600    '
-                      />
-                    </div>
-
-                    <div className='ms-4 text-sm'>
-                      <label htmlFor='express' className='font-medium leading-none text-gray-900 '>
-                        {' '}
-                        $49 - Express Delivery{' '}
-                      </label>
-                      <p id='express-text' className='mt-1 text-xs font-normal text-gray-500 '>
-                        Get it today
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor='voucher' className='mb-2 block text-sm font-medium text-gray-900 '>
-                {' '}
-                Enter a gift card, voucher or promotional code{' '}
-              </label>
-              <div className='flex max-w-md items-center gap-4'>
-                <MyInput type='text' id='voucher' required></MyInput>
-
-                <button
-                  type='button'
-                  className='flex items-center justify-center rounded-lg bg-blue-700  text-white px-5 py-2.5 text-sm font-medium  hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300'
+              <div>
+                <label htmlFor='country' className='mb-2 block text-sm font-medium text-gray-900'>
+                  Country*
+                </label>
+                <select
+                  onChange={handleChangeForm}
+                  id='country'
+                  className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900'
                 >
-                  Apply
-                </button>
+                  <option value='United States'>United States</option>
+                  <option value='Australia'>Australia</option>
+                  <option value='France'>France</option>
+                  <option value='Spain'>Spain</option>
+                  <option value='United Kingdom'>United Kingdom</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor='city' className='mb-2 block text-sm font-medium text-gray-900'>
+                  City*
+                </label>
+                <select
+                  onChange={handleChangeForm}
+                  id='city'
+                  className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900'
+                >
+                  <option value='San Francisco'>San Francisco</option>
+                  <option value='New York'>New York</option>
+                  <option value='Los Angeles'>Los Angeles</option>
+                  <option value='Chicago'>Chicago</option>
+                  <option value='Houston'>Houston</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor='phoneNumber' className='mb-2 block text-sm font-medium text-gray-900'>
+                  Phone Number*
+                </label>
+                <MyInput onChange={handleChangeForm} type='tel' id='phoneNumber' placeholder='05416945683' required />
+                {formErrors.phoneNumber && <p className='text-red-500 text-sm mt-1'>{formErrors.phoneNumber}</p>}
+              </div>
+              <div>
+                <label htmlFor='address' className='mb-2 block text-sm font-medium text-gray-900'>
+                  Address
+                </label>
+                <MyInput
+                  onChange={handleChangeForm}
+                  type='text'
+                  id='address'
+                  placeholder='Sinanbey Mah. Ahmet Akyolu Cad. No 64 / 10 İnegöl/Bursa'
+                  required
+                />
+                {formErrors.address && <p className='text-red-500 text-sm mt-1'>{formErrors.address}</p>}
+              </div>
+              <div>
+                <label htmlFor='companyName' className='mb-2 block text-sm font-medium text-gray-900'>
+                  Company name
+                </label>
+                <MyInput onChange={handleChangeForm} type='text' id='companyName' placeholder='Alttantire' required />
+                {formErrors.companyName && <p className='text-red-500 text-sm mt-1'>{formErrors.companyName}</p>}
+              </div>
+              <div>
+                <label htmlFor='vatNumber' className='mb-2 block text-sm font-medium text-gray-900'>
+                  VAT number
+                </label>
+                <MyInput onChange={handleChangeForm} type='text' id='vatNumber' placeholder='DE42313253' required />
+                {formErrors.vatNumber && <p className='text-red-500 text-sm mt-1'>{formErrors.vatNumber}</p>}
               </div>
             </div>
           </div>
 
-          <Summary items={items}></Summary>
+          <section className='bg-white md:py-16'>
+            <div className='2xl:px-0'>
+              <h2 className='text-xl font-semibold text-gray-900 mt-4 sm:text-2xl'>Payment</h2>
+              <div className='mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12'>
+                <form
+                  onSubmit={handleSubmit}
+                  className='w-full rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6 lg:max-w-xl lg:p-8'
+                >
+                  <div className='grid grid-cols-2 gap-4'>
+                    <div>
+                      <label htmlFor='fullName' className='mb-2 block text-sm font-medium text-gray-900'>
+                        Full name
+                      </label>
+                      <MyInput
+                        onChange={handleChangePayment}
+                        type='text'
+                        id='fullName'
+                        className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900'
+                        placeholder='Bonnie Green'
+                        required
+                      />
+                      {formErrors.fullName && <p className='text-red-500 text-sm mt-1'>{formErrors.fullName}</p>}
+                    </div>
+                    <div>
+                      <label htmlFor='cardNumber' className='mb-2 block text-sm font-medium text-gray-900'>
+                        Card number*
+                      </label>
+                      <MyInput
+                        onChange={handleChangePayment}
+                        type='text'
+                        id='cardNumber'
+                        className={`block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 ${
+                          formErrors.cardNumber && 'border-red-500'
+                        }`}
+                        placeholder='xxxx-xxxx-xxxx-xxxx'
+                        required
+                      />
+                      {formErrors.cardNumber && <p className='text-red-500 text-sm mt-1'>{formErrors.cardNumber}</p>}
+                    </div>
+                    <div>
+                      <label htmlFor='cardExpiration' className='mb-2 block text-sm font-medium text-gray-900'>
+                        Card expiration*
+                      </label>
+                      <div className='relative'>
+                        <div className='pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5'>
+                          <CalendarDaysIcon className='w-3.5' />
+                        </div>
+                        <MyInput
+                          onChange={handleChangePayment}
+                          datepicker
+                          datepicker-format='mm/yy'
+                          id='cardExpiration'
+                          type='text'
+                          className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-9 text-sm text-gray-900'
+                          placeholder='12/23'
+                          required
+                        />
+                      </div>
+                      {formErrors.cardExpiration && (
+                        <p className='text-red-500 text-sm mt-1'>{formErrors.cardExpiration}</p>
+                      )}
+                    </div>
+                    <div>
+                      <label htmlFor='cvv' className='mb-2 block text-sm font-medium text-gray-900'>
+                        CVV*
+                      </label>
+                      <div className='flex items-center'>
+                        <MyInput
+                          onChange={handleChangePayment}
+                          type='number'
+                          id='cvv'
+                          className={`block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 ${
+                            formErrors.cvv && 'border-red-500'
+                          }`}
+                          placeholder='•••'
+                          required
+                        />
+                        <button
+                          data-tooltip-target='cvv-desc'
+                          data-tooltip-trigger='hover'
+                          className='text-gray-400 hover:text-gray-900'
+                        >
+                          <InformationCircleIcon className='w-4 h-4' />
+                        </button>
+                        <div
+                          id='cvv-desc'
+                          role='tooltip'
+                          className='tooltip invisible absolute z-10 p-2 -mt-3 ml-2 text-sm text-white bg-gray-900 rounded-lg shadow-sm'
+                        >
+                          The last 3 digits on the back of the card
+                        </div>
+                      </div>
+                      {formErrors.cvv && <p className='text-red-500 text-sm mt-1'>{formErrors.cvv}</p>}
+                    </div>
+                  </div>
+                  <button
+                    type='submit'
+                    className='flex items-center justify-center w-full py-2.5 mt-4 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100'
+                  >
+                    <PlusIcon className='w-5 h-5 text-black' />
+                    Add new Card
+                  </button>
+                </form>
+              </div>
+            </div>
+          </section>
         </div>
-      </form>
+        <Summary
+          data={cart.totalAmount}
+          saving={cart.savings}
+          storePickup={10}
+          tax={50}
+          title='Complete Purchase'
+          href={'/den'}
+          onClick={handleSubmit}
+        />
+      </div>
     </section>
   );
 };

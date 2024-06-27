@@ -1,8 +1,11 @@
 import React from 'react';
 
-const MyInput = ({ type = 'text', name, placeholder, value, onChange, className = '', ...props }) => {
+const MyInput = ({ ref, id, pattern, type, name, placeholder, value, onChange, className = '', ...props }) => {
   return (
     <input
+      ref={ref}
+      id={id}
+      pattern={pattern}
       type={type}
       name={name}
       placeholder={placeholder}
