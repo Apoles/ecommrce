@@ -36,7 +36,7 @@ const ProductCard = ({ data }) => {
   };
 
   return (
-    <div className='max-w-xs p-5 max-md:max-w-xl max-md:mx-6 border border-gray-200 rounded-lg shadow'>
+    <div className='max-w-xs    p-5 max-md:max-w-xl max-md:mx-6 border border-gray-200 rounded-lg shadow'>
       {/* Ürün detay sayfasına yönlendirme için Link */}
       <Link href={`/product/${slugify(data.title)}?id=${data.id}`} as={`/product/${slugify(data.title)}`}>
         <img className='rounded-t-lg' src={data.thumbnail} alt={data.title} />

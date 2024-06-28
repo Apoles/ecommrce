@@ -1,6 +1,13 @@
 import { StarIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { useState } from 'react';
 
-export default function Search() {
+export default function Search({ onSearchSelect }) {
+  const handleInputChange = async (e) => {
+    const value = e.target.value;
+    console.log(value, '=calue');
+    onSearchSelect(value);
+  };
+
   return (
     <div className='max-w-5xl my-4 w-full mx-auto max-sm:p-4'>
       {/* Arama etiketi */}
@@ -15,10 +22,11 @@ export default function Search() {
         {/* Arama inputu */}
         <input
           type='search'
-          id='default-search'
+          id='search'
           className='block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500'
           placeholder='Search'
           required
+          onChange={handleInputChange}
         />
       </div>
     </div>
