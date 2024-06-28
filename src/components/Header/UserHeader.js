@@ -142,18 +142,6 @@ const UserHeader = () => {
                 >
                   Stores
                 </Link>
-                <Link
-                  href='login'
-                  className='block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-800'
-                >
-                  Sign in
-                </Link>
-                <Link
-                  href='#'
-                  className='block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-800'
-                >
-                  Create account
-                </Link>
               </div>
             </div>
           )}
