@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Bars3Icon, HomeIcon, ShoppingBagIcon } from '@heroicons/react/24/solid';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { useSelector } from 'react-redux';
@@ -6,6 +6,8 @@ import Link from 'next/link';
 import axios from 'axios';
 
 const UserHeader = () => {
+  const [bar, setBar] = useState(false);
+
   const handleLogout = async () => {
     try {
       await axios.post('/api/logOut'); // logout API endpoint'ini çağır
@@ -23,7 +25,11 @@ const UserHeader = () => {
         <nav className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='border-b border-gray-200'>
             <div className='flex h-16 items-center'>
-              <button type='button' className='relative rounded-md bg-white p-2 text-gray-400 lg:hidden'>
+              <button
+                onClick={() => setBar(!bar)}
+                type='button'
+                className='relative rounded-md bg-white p-2 text-gray-400 lg:hidden'
+              >
                 <span className='absolute -inset-0.5'></span>
                 <Bars3Icon className='w-6 h-6 text-black' />
               </button>
@@ -103,6 +109,54 @@ const UserHeader = () => {
               </div>
             </div>
           </div>
+          {bar && (
+            <div className='lg:hidden'>
+              <div className='space-y-1 px-2 pt-2 pb-3'>
+                <Link
+                  href='/'
+                  className='block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-800'
+                >
+                  Home
+                </Link>
+                <Link
+                  href='/women'
+                  className='block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-800'
+                >
+                  Women
+                </Link>
+                <Link
+                  href='/men'
+                  className='block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-800'
+                >
+                  Men
+                </Link>
+                <Link
+                  href='#'
+                  className='block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-800'
+                >
+                  Company
+                </Link>
+                <Link
+                  href='#'
+                  className='block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-800'
+                >
+                  Stores
+                </Link>
+                <Link
+                  href='login'
+                  className='block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-800'
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href='#'
+                  className='block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-800'
+                >
+                  Create account
+                </Link>
+              </div>
+            </div>
+          )}
         </nav>
       </header>
     </div>

@@ -31,16 +31,16 @@ const Header = () => {
 
             {/* Büyük ekran görünümünde menü */}
             <div className='hidden lg:flex lg:items-center lg:space-x-8'>
-              <Link href='/women' className='text-sm font-medium text-gray-700 hover:text-gray-800'>
+              <Link href='/' className='text-sm font-medium text-gray-700 hover:text-gray-800'>
                 Women
               </Link>
-              <Link href='/men' className='text-sm font-medium text-gray-700 hover:text-gray-800'>
+              <Link href='/' className='text-sm font-medium text-gray-700 hover:text-gray-800'>
                 Men
               </Link>
-              <Link href='#' className='text-sm font-medium text-gray-700 hover:text-gray-800'>
+              <Link href='/' className='text-sm font-medium text-gray-700 hover:text-gray-800'>
                 Company
               </Link>
-              <Link href='#' className='text-sm font-medium text-gray-700 hover:text-gray-800'>
+              <Link href='/' className='text-sm font-medium text-gray-700 hover:text-gray-800'>
                 Stores
               </Link>
             </div>
