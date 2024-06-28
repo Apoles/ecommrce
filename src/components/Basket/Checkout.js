@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
 import MyInput from '../MyInput';
 import Summary from './Summary';
-import { PlusIcon, CalendarDaysIcon, InformationCircleIcon } from '@heroicons/react/24/solid';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateFormData, updatePaymentData, updateUserData } from '@/Store/paymentSlice';
 
 const CheckoutCard = () => {
-  const dispatch = useDispatch();
-  const cart = useSelector((state) => state.cart);
-  const user = useSelector((state) => state.auth);
-  const payment = useSelector((state) => state.payment);
+  const dispatch = useDispatch(); // dispatch fonksiyonu oluşturuluyor.
+  const cart = useSelector((state) => state.cart); // cart durumu Redux store'dan alınıyor.
+  const user = useSelector((state) => state.auth); // user durumu Redux store'dan alınıyor.
+  const payment = useSelector((state) => state.payment); // payment durumu Redux store'dan alınıyor.
 
-  console.log(cart);
-  console.log(user);
-  console.log(payment);
+  console.log(payment); // payment durumu konsola yazdırılıyor.
 
+  // formData ve paymentData için useState hook'ları kullanılarak başlangıç durumları tanımlanıyor.
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -33,6 +31,7 @@ const CheckoutCard = () => {
     cvv: '',
   });
 
+  // formErrors durumu için useState hook'u kullanılarak başlangıç durumu tanımlanıyor.
   const [formErrors, setFormErrors] = useState({
     name: '',
     email: '',
@@ -46,36 +45,39 @@ const CheckoutCard = () => {
     cvv: '',
   });
 
+  // formData güncelleme fonksiyonu
   const handleChangeForm = (e) => {
-    const { id, value } = e.target;
+    const { id, value } = e.target; // input elementinden id ve value değerleri alınıyor.
     setFormData({
       ...formData,
       [id]: value,
     });
-    // Clear previous error message if any
+    // Önceki hata mesajı varsa temizleniyor.
     setFormErrors({
       ...formErrors,
       [id]: '',
     });
   };
 
+  // paymentData güncelleme fonksiyonu
   const handleChangePayment = (e) => {
-    const { id, value } = e.target;
+    const { id, value } = e.target; // input elementinden id ve value değerleri alınıyor.
     setPaymentData({
       ...paymentData,
       [id]: value,
     });
-    // Clear previous error message if any
+    // Önceki hata mesajı varsa temizleniyor.
     setFormErrors({
       ...formErrors,
       [id]: '',
     });
   };
 
+  // Form doğrulama fonksiyonu
   const validateForm = () => {
     let isValid = true;
 
-    // Validate full name
+    // fullName doğrulama
     if (paymentData.fullName.trim() === '') {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
@@ -84,16 +86,16 @@ const CheckoutCard = () => {
       isValid = false;
     }
 
-    // Validate companyName
+    // companyName doğrulama
     if (formData.companyName.trim() === '' || !isValidEmpty(formData.companyName)) {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
-        companyName: 'Required .',
+        companyName: 'Required.',
       }));
       isValid = false;
     }
 
-    // Validate card expiration
+    // cardExpiration doğrulama
     if (!isValidCardExpiration(paymentData.cardExpiration.trim())) {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
@@ -102,35 +104,34 @@ const CheckoutCard = () => {
       isValid = false;
     }
 
-    // Validate vatNumber
-
+    // vatNumber doğrulama
     if (formData.vatNumber.trim() === '' || !isValidEmpty(formData.vatNumber)) {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
-        vatNumber: 'Required .',
+        vatNumber: 'Required.',
       }));
       isValid = false;
     }
 
-    // Validate address
+    // address doğrulama
     if (formData.address.trim() === '' || !isValidEmpty(formData.name)) {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
-        address: 'Required .',
+        address: 'Required.',
       }));
       isValid = false;
     }
 
-    //Validate name
-    if (validateForm.name.trim() === '') {
+    // name doğrulama
+    if (formData.name.trim() === '') {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
-        name: 'Please enter your full name .',
+        name: 'Please enter your full name.',
       }));
       isValid = false;
     }
 
-    // Validate email
+    // email doğrulama
     if (formData.email.trim() === '' || !isValidEmail(formData.email)) {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
@@ -139,7 +140,7 @@ const CheckoutCard = () => {
       isValid = false;
     }
 
-    // Validate phone number
+    // phoneNumber doğrulama
     if (isNaN(formData.phoneNumber.trim()) || formData.phoneNumber.trim() === '') {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
@@ -148,7 +149,7 @@ const CheckoutCard = () => {
       isValid = false;
     }
 
-    // Validate card number
+    // cardNumber doğrulama
     if (!isValidCardNumber(paymentData.cardNumber.trim())) {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
@@ -157,7 +158,7 @@ const CheckoutCard = () => {
       isValid = false;
     }
 
-    // Validate CVV
+    // CVV doğrulama
     if (isNaN(paymentData.cvv.trim()) || paymentData.cvv.trim().length !== 3) {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
@@ -169,39 +170,49 @@ const CheckoutCard = () => {
     return isValid;
   };
 
+  // Boşluk doğrulama fonksiyonu
   const isValidEmpty = (text) => {
     const regex = /.+/;
     return regex.test(text);
   };
+
+  // Sadece harf doğrulama fonksiyonu
   const isValidText = (text) => {
     const regex = /^[a-zA-Z]+$/g;
     return regex.test(text);
   };
+
+  // E-posta doğrulama fonksiyonu
   const isValidEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
   };
 
+  // Kart numarası doğrulama fonksiyonu
   const isValidCardNumber = (cardNumber) => {
     const regex = /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|9[0-9]{15})$/;
     return regex.test(cardNumber);
   };
 
+  // Kart son kullanma tarihi doğrulama fonksiyonu
   const isValidCardExpiration = (expiration) => {
     const regex = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/;
 
     if (!regex.test(expiration)) return false;
 
-    // Check if it's a valid future date
+    // Gelecek bir tarih olup olmadığını kontrol etme
     const today = new Date();
     const [month, year] = expiration.split('/');
     const cardExpirationDate = new Date(`20${year}`, month - 1);
 
     return cardExpirationDate > today;
   };
+
+  // Form gönderme işlemi
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
+      // Form verilerini ve ödeme verilerini Redux'a dispatch etme
       dispatch(updateFormData(formData));
       dispatch(updatePaymentData(paymentData));
       dispatch(
@@ -216,11 +227,10 @@ const CheckoutCard = () => {
       );
     }
   };
-
   return (
-    <section className='bg-white py-8 antialiased md:py-16'>
+    <section className='bg-white py-8 antialiased md:py-16  max-sm:p-0'>
       <div className='mx-auto max-w-screen-xl px-4 2xl:px-0 mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12 xl:gap-16'>
-        <div className='w-2/3 mx-auto'>
+        <div className='w-full lg:w-2/3 mx-auto'>
           <div className='space-y-4'>
             <h2 className='text-xl font-semibold text-gray-900'>Delivery Details</h2>
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
@@ -269,166 +279,100 @@ const CheckoutCard = () => {
                   id='city'
                   className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900'
                 >
-                  <option value='San Francisco'>San Francisco</option>
                   <option value='New York'>New York</option>
                   <option value='Los Angeles'>Los Angeles</option>
                   <option value='Chicago'>Chicago</option>
                   <option value='Houston'>Houston</option>
+                  <option value='Miami'>Miami</option>
                 </select>
               </div>
               <div>
                 <label htmlFor='phoneNumber' className='mb-2 block text-sm font-medium text-gray-900'>
-                  Phone Number*
+                  Your phone number*
                 </label>
-                <MyInput onChange={handleChangeForm} type='tel' id='phoneNumber' placeholder='05416945683' required />
+                <MyInput
+                  onChange={handleChangeForm}
+                  type='tel'
+                  id='phoneNumber'
+                  placeholder='+90 535 666 25 36'
+                  required
+                />
                 {formErrors.phoneNumber && <p className='text-red-500 text-sm mt-1'>{formErrors.phoneNumber}</p>}
               </div>
               <div>
                 <label htmlFor='address' className='mb-2 block text-sm font-medium text-gray-900'>
-                  Address
+                  Your address*
                 </label>
-                <MyInput
-                  onChange={handleChangeForm}
-                  type='text'
-                  id='address'
-                  placeholder='Sinanbey Mah. Ahmet Akyolu Cad. No 64 / 10 İnegöl/Bursa'
-                  required
-                />
+                <MyInput onChange={handleChangeForm} type='text' id='address' placeholder='123 Main St.' required />
                 {formErrors.address && <p className='text-red-500 text-sm mt-1'>{formErrors.address}</p>}
               </div>
               <div>
                 <label htmlFor='companyName' className='mb-2 block text-sm font-medium text-gray-900'>
-                  Company name
+                  Company Name
                 </label>
-                <MyInput onChange={handleChangeForm} type='text' id='companyName' placeholder='Alttantire' required />
+                <MyInput onChange={handleChangeForm} type='text' id='companyName' placeholder='Company ABC' />
                 {formErrors.companyName && <p className='text-red-500 text-sm mt-1'>{formErrors.companyName}</p>}
               </div>
               <div>
                 <label htmlFor='vatNumber' className='mb-2 block text-sm font-medium text-gray-900'>
-                  VAT number
+                  VAT Number
                 </label>
-                <MyInput onChange={handleChangeForm} type='text' id='vatNumber' placeholder='DE42313253' required />
+                <MyInput onChange={handleChangeForm} type='text' id='vatNumber' placeholder='VAT123456' />
                 {formErrors.vatNumber && <p className='text-red-500 text-sm mt-1'>{formErrors.vatNumber}</p>}
               </div>
             </div>
           </div>
-
-          <section className='bg-white md:py-16'>
-            <div className='2xl:px-0'>
-              <h2 className='text-xl font-semibold text-gray-900 mt-4 sm:text-2xl'>Payment</h2>
-              <div className='mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12'>
-                <form
-                  onSubmit={handleSubmit}
-                  className='w-full rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6 lg:max-w-xl lg:p-8'
-                >
-                  <div className='grid grid-cols-2 gap-4'>
-                    <div>
-                      <label htmlFor='fullName' className='mb-2 block text-sm font-medium text-gray-900'>
-                        Full name
-                      </label>
-                      <MyInput
-                        onChange={handleChangePayment}
-                        type='text'
-                        id='fullName'
-                        className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900'
-                        placeholder='Bonnie Green'
-                        required
-                      />
-                      {formErrors.fullName && <p className='text-red-500 text-sm mt-1'>{formErrors.fullName}</p>}
-                    </div>
-                    <div>
-                      <label htmlFor='cardNumber' className='mb-2 block text-sm font-medium text-gray-900'>
-                        Card number*
-                      </label>
-                      <MyInput
-                        onChange={handleChangePayment}
-                        type='text'
-                        id='cardNumber'
-                        className={`block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 ${
-                          formErrors.cardNumber && 'border-red-500'
-                        }`}
-                        placeholder='xxxx-xxxx-xxxx-xxxx'
-                        required
-                      />
-                      {formErrors.cardNumber && <p className='text-red-500 text-sm mt-1'>{formErrors.cardNumber}</p>}
-                    </div>
-                    <div>
-                      <label htmlFor='cardExpiration' className='mb-2 block text-sm font-medium text-gray-900'>
-                        Card expiration*
-                      </label>
-                      <div className='relative'>
-                        <div className='pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5'>
-                          <CalendarDaysIcon className='w-3.5' />
-                        </div>
-                        <MyInput
-                          onChange={handleChangePayment}
-                          datepicker
-                          datepicker-format='mm/yy'
-                          id='cardExpiration'
-                          type='text'
-                          className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-9 text-sm text-gray-900'
-                          placeholder='12/23'
-                          required
-                        />
-                      </div>
-                      {formErrors.cardExpiration && (
-                        <p className='text-red-500 text-sm mt-1'>{formErrors.cardExpiration}</p>
-                      )}
-                    </div>
-                    <div>
-                      <label htmlFor='cvv' className='mb-2 block text-sm font-medium text-gray-900'>
-                        CVV*
-                      </label>
-                      <div className='flex items-center'>
-                        <MyInput
-                          onChange={handleChangePayment}
-                          type='number'
-                          id='cvv'
-                          className={`block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 ${
-                            formErrors.cvv && 'border-red-500'
-                          }`}
-                          placeholder='•••'
-                          required
-                        />
-                        <button
-                          data-tooltip-target='cvv-desc'
-                          data-tooltip-trigger='hover'
-                          className='text-gray-400 hover:text-gray-900'
-                        >
-                          <InformationCircleIcon className='w-4 h-4' />
-                        </button>
-                        <div
-                          id='cvv-desc'
-                          role='tooltip'
-                          className='tooltip invisible absolute z-10 p-2 -mt-3 ml-2 text-sm text-white bg-gray-900 rounded-lg shadow-sm'
-                        >
-                          The last 3 digits on the back of the card
-                        </div>
-                      </div>
-                      {formErrors.cvv && <p className='text-red-500 text-sm mt-1'>{formErrors.cvv}</p>}
-                    </div>
-                  </div>
-                  <button
-                    type='submit'
-                    className='flex items-center justify-center w-full py-2.5 mt-4 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100'
-                  >
-                    <PlusIcon className='w-5 h-5 text-black' />
-                    Add new Card
-                  </button>
-                </form>
+          <div className='space-y-4 mt-6'>
+            <h2 className='text-xl font-semibold text-gray-900'>Payment Information</h2>
+            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+              <div>
+                <label htmlFor='fullName' className='mb-2 block text-sm font-medium text-gray-900'>
+                  Full name as on card*
+                </label>
+                <MyInput onChange={handleChangePayment} type='text' id='fullName' placeholder='John Doe' required />
+                {formErrors.fullName && <p className='text-red-500 text-sm mt-1'>{formErrors.fullName}</p>}
+              </div>
+              <div>
+                <label htmlFor='cardNumber' className='mb-2 block text-sm font-medium text-gray-900'>
+                  Card number*
+                </label>
+                <MyInput
+                  onChange={handleChangePayment}
+                  type='text'
+                  id='cardNumber'
+                  placeholder='1234 5678 9012 3456'
+                  required
+                />
+                {formErrors.cardNumber && <p className='text-red-500 text-sm mt-1'>{formErrors.cardNumber}</p>}
+              </div>
+              <div>
+                <label htmlFor='cardExpiration' className='mb-2 block text-sm font-medium text-gray-900'>
+                  Expiration date (MM/YY)*
+                </label>
+                <MyInput onChange={handleChangePayment} type='text' id='cardExpiration' placeholder='MM/YY' required />
+                {formErrors.cardExpiration && <p className='text-red-500 text-sm mt-1'>{formErrors.cardExpiration}</p>}
+              </div>
+              <div>
+                <label htmlFor='cvv' className='mb-2 block text-sm font-medium text-gray-900'>
+                  CVV*
+                </label>
+                <MyInput onChange={handleChangePayment} type='text' id='cvv' placeholder='123' required />
+                {formErrors.cvv && <p className='text-red-500 text-sm mt-1'>{formErrors.cvv}</p>}
               </div>
             </div>
-          </section>
+          </div>
         </div>
-        <Summary
-          data={cart.totalAmount}
-          saving={cart.savings}
-          storePickup={10}
-          tax={50}
-          title='Complete Purchase'
-          href={'/den'}
-          onClick={handleSubmit}
-        />
+        <div className='mt-8 lg:mt-0 lg:w-1/3'>
+          <Summary
+            data={cart.totalAmount}
+            saving={cart.savings}
+            storePickup={10}
+            tax={50}
+            title='Complete Purchase'
+            href={'/den'}
+            onClick={handleSubmit}
+          />{' '}
+        </div>
       </div>
     </section>
   );

@@ -42,42 +42,38 @@ const Login = () => {
 
   // JSX dönüşü
   return (
-    <div className='flex flex-col justify-start max-sm:px-4 py-12 px-24 sm:px-6 h-screen lg:px-8'>
-      <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md px-8 py-8 bg-gray-50 shadow sm:rounded-lg sm:px-10'>
+    <div className='flex max-sm:w-screen max-sm:p-0 max-sm:m-0 max-sm:pr-3 flex-col justify-start  py-12 px-24 sm:px-6 h-full lg:px-8'>
+      <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4  py-8 bg-gray-50 shadow sm:rounded-lg sm:px-10'>
         <form onSubmit={handleSubmit} method='POST' className='space-y-6'>
           {/* Email giriş alanı */}
-          <div>
-            <label htmlFor='email' className='block text-sm font-medium text-gray-700'>
-              Email address
-            </label>
-            <div className='mt-1'>
-              <input
-                id='email'
-                name='email'
-                type='string'
-                onChange={handleEmail}
-                required
-                className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-              />
-            </div>
+          <label htmlFor='email' className='block text-sm font-medium text-gray-700'>
+            Email address
+          </label>
+          <div className='mt-1'>
+            <input
+              id='email'
+              name='email'
+              type='string'
+              onChange={handleEmail}
+              required
+              className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+            />
           </div>
 
           {/* Şifre giriş alanı */}
-          <div>
-            <label htmlFor='password' className='block text-sm font-medium text-gray-700'>
-              Password
-            </label>
-            <div className='mt-1'>
-              <input
-                id='password'
-                name='password'
-                type='password'
-                autoComplete='current-password'
-                onChange={handlePass}
-                required
-                className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-              />
-            </div>
+          <label htmlFor='password' className='block text-sm font-medium text-gray-700'>
+            Password
+          </label>
+          <div className='mt-1'>
+            <input
+              id='password'
+              name='password'
+              type='password'
+              autoComplete='current-password'
+              onChange={handlePass}
+              required
+              className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+            />
           </div>
 
           {/* Remember me ve Forgot password linki */}
