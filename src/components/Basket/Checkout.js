@@ -18,8 +18,8 @@ const CheckoutCard = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    country: 'United States',
-    city: 'San Francisco',
+    country: '',
+    city: '',
     phoneNumber: '',
     address: '',
     companyName: '',

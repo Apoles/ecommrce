@@ -24,7 +24,7 @@ const BasketCard = () => {
               <div className='rounded-lg border border-gray-200 bg-white p-4 shadow-sm'>
                 {cart.data.length === 0 ? (
                   <div className='w-full h-44 flex flex-col items-center justify-center'>
-                    <p className='text-black'>Your shopping cart is currently empty.</p>
+                    <p className='text-black text-center'>Your shopping cart is currently empty.</p>
                     <Link className='mt-3' href='/'>
                       <MyButton text='Start Shopping' />
                     </Link>
