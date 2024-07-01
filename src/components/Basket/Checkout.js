@@ -10,8 +10,6 @@ const CheckoutCard = () => {
   const user = useSelector((state) => state.auth); // user durumu Redux store'dan alınıyor.
   const payment = useSelector((state) => state.payment); // payment durumu Redux store'dan alınıyor.
 
-  console.log(payment); // payment durumu konsola yazdırılıyor.
-
   // formData ve paymentData için useState hook'ları kullanılarak başlangıç durumları tanımlanıyor.
   const [formData, setFormData] = useState({
     name: '',

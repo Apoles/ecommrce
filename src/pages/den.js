@@ -9,8 +9,6 @@ const OtpForm = () => {
 
   const den = useSelector((state) => state.payment);
 
-  console.log(den, '===========>');
-
   const ClearBasket = () => {
     dispatch(clear());
   };

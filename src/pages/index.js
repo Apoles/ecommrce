@@ -34,16 +34,13 @@ export default function Home() {
       }
       if (search) {
         url = `https://dummyjson.com/products/search?q=${search}`;
-        console.log(url, 'url');
       }
 
       const response = await axios.get(url); // Axios ile URL üzerinden veri getirilir
 
-      console.log(response.data, 'asdasd');
       setData(response.data); // Veri state'ine atanır
       setError(null); // Hata state'i temizlenir
     } catch (error) {
-      console.error('Error fetching data:>>>>>>>>>>>>>>>>>>>', error);
       setError(error); // Hata state'ine hata atanır
     } finally {
       setIsLoading(false); // Yükleme durumu kapatılır

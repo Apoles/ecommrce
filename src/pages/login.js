@@ -36,7 +36,6 @@ const Login = () => {
         window.location.href = '/';
       }
     } catch (error) {
-      console.log(error); // Hata durumunda hatayı konsola yazdırır
       setError(true); // Hata durumu state'ini günceller
     }
   };

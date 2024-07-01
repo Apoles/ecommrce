@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import LoadingSpinner from './LoadingUi/LoadingSpinner';
 import CategoryRating from './CategoryMenu/CategoryRating';
 
-const CategoryMenu = ({ onCategorySelect, lenght }) => {
+const CategoryMenu = ({ onCategorySelect }) => {
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState();
 

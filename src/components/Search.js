@@ -4,7 +4,6 @@ import { useState } from 'react';
 export default function Search({ onSearchSelect }) {
   const handleInputChange = async (e) => {
     const value = e.target.value;
-    console.log(value, '=calue');
     onSearchSelect(value);
   };
 
