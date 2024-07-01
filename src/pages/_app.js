@@ -12,18 +12,22 @@ import MainLoadingSpinner from '@/components/LoadingUi/MainPageLoadingSpinner'; 
 function AppContent({ Component, pageProps }) {
   const dispatch = useDispatch();
   const { loggedIn, status } = useSelector((state) => state.auth); // Redux store'dan kullanıcı giriş durumu ve durumu alınır
+  console.log(loggedIn.success, '===>');
 
   // Giriş durumunu kontrol etme efekti
   useEffect(() => {
     if (status === 'idle') {
       dispatch(checkLoginStatus()); // Eğer durum 'idle' ise giriş durumunu kontrol eden aksiyonu tetikle
     }
-  }, [status, dispatch]);
+  }, [status, dispatch, loggedIn]);
 
   // Yükleme durumunda spinner gösterimi
   if (status === 'loading' || status === 'idle') {
     return <MainLoadingSpinner />;
   }
+
+  console.log(status, 'status');
+  console.log(loggedIn, 'succeess');
 
   // Giriş yapılmışsa UserLayout kullan, değilse MainLayout kullan
   return (

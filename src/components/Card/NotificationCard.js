@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const Notification = ({ message, onClose }) => {
+const Notification = ({ message, onClose, bgColor }) => {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -14,7 +14,7 @@ const Notification = ({ message, onClose }) => {
 
   return (
     <div
-      className={`fixed top-0 right-0 p-4 m-4 bg-green-500 text-white rounded shadow-lg transition-opacity ${
+      className={`fixed top-0 right-0 p-4 m-4 ${bgColor}  text-white rounded shadow-lg transition-opacity ${
         visible ? 'opacity-100' : 'opacity-0'
       }`}
     >

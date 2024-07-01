@@ -7,11 +7,21 @@ import Carousel from '@/components/Carousel';
 import MyButton from '@/components/MyButton';
 import Rating from '@/components/Rating';
 import CommentCard from '@/components/Card/CommentCard';
+import Notification from '@/components/Card/NotificationCard';
 
 export default function Product({ data, error }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const [price, setPrice] = useState('');
+  const [showNotification, setShowNotification] = useState(false);
+
+  const handleProductAdd = () => {
+    // Ürün ekleme işlemi başarılı olduğunda
+    setShowNotification(true);
+
+    // İsteğe bağlı olarak, bir süre sonra bildirimi kapatmak için:
+    setTimeout(() => setShowNotification(false), 5000); // 5 saniye sonra kapat
+  };
 
   // Veri yüklendiğinde fiyatı hesapla
   useEffect(() => {
@@ -68,6 +78,7 @@ export default function Product({ data, error }) {
               <MyButton
                 onClick={() => {
                   dispatch(fetchDataById(data.id)); // Sepete ekleme işlemi
+                  handleProductAdd();
                 }}
                 text={'Add to Cart'}
               />
@@ -109,6 +120,13 @@ export default function Product({ data, error }) {
 
       {/* Yorum kartları */}
       <CommentCard data={data.reviews} />
+      {showNotification && (
+        <Notification
+          bgColor='bg-green-500'
+          message='Ürün başarıyla eklendi!'
+          onClose={() => setShowNotification(false)}
+        />
+      )}
     </div>
   );
 }

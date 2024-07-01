@@ -78,7 +78,11 @@ const ProductCard = ({ data }) => {
       </div>
 
       {showNotification && (
-        <Notification message='Ürün başarıyla eklendi!' onClose={() => setShowNotification(false)} />
+        <Notification
+          bgColor='bg-green-500'
+          message='Ürün başarıyla eklendi!'
+          onClose={() => setShowNotification(false)}
+        />
       )}
     </div>
   );

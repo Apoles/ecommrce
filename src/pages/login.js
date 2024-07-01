@@ -1,4 +1,5 @@
 // Gerekli kütüphaneler ve bileşenler import edildi
+import Notification from '@/components/Card/NotificationCard';
 import axios from 'axios'; // Axios kütüphanesi import edildi
 import { useRouter } from 'next/router'; // Next.js router hook'u import edildi
 import React, { useState } from 'react'; // React ve useState hook'u import edildi
@@ -8,10 +9,9 @@ const Login = () => {
   const [myEmail, setMyEmail] = useState(''); // Email state'i
   const [myPassword, setMyPassword] = useState(''); // Şifre state'i
   const [log, setLog] = useState(false); // Login durumu state'i
+  const [showNotification, setShowNotification] = useState(false);
 
-  const [error, setError] = useState(); // Hata durumu state'i
-
-  const router = useRouter(); // Router hook'u
+  const [error, setError] = useState(false); // Hata durumu state'i
 
   // Email alanı değiştiğinde çalışan fonksiyon
   const handleEmail = (event) => {
@@ -32,11 +32,12 @@ const Login = () => {
 
       if (response.data.success === true) {
         setLog(true); // Giriş başarılıysa login durumunu true yapar
-        router.push('/'); // Ana sayfaya yönlendirir
+
+        window.location.href = '/';
       }
     } catch (error) {
       console.log(error); // Hata durumunda hatayı konsola yazdırır
-      setError(error); // Hata durumu state'ini günceller
+      setError(true); // Hata durumu state'ini günceller
     }
   };
 
@@ -99,6 +100,21 @@ const Login = () => {
           >
             Sign in
           </button>
+
+          {log == false ? null : (
+            <Notification
+              bgColor={'bg-green-500'}
+              onClose={() => setShowNotification(false)}
+              message={'Giriş Başarılı'}
+            ></Notification>
+          )}
+          {error == true ? (
+            <Notification
+              bgColor={'bg-red-500'}
+              onClose={() => setError(false)}
+              message={'Kullanıcı Bulunamadı'}
+            ></Notification>
+          ) : null}
         </form>
       </div>
     </div>
