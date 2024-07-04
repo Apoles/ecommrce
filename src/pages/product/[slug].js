@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { fetchDataById } from '@/Store/cartSlice';
+import { fetchDataById } from '@/Store/CartSlice';
 import Carousel from '@/components/Carousel';
 import MyButton from '@/components/MyButton';
 import Rating from '@/components/Rating';

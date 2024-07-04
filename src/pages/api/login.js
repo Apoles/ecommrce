@@ -4,10 +4,10 @@ import { setCookie } from 'nookies';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const { myEmail, myPassword } = req.body;
+    // const { myEmail, myPassword } = req.body;
 
-    // const myEmail = 'emilys';
-    //  const myPassword = 'emilyspass';
+    const myEmail = 'emilys';
+    const myPassword = 'emilyspass';
 
     const currentUser = await axios.get(`https://dummyjson.com/users/search?q=${myEmail}`);
 

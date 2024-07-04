@@ -54,7 +54,7 @@ const Summary = ({ data, saving, storePickup, tax, title, href, onClick }) => {
         <div className='flex items-center justify-center gap-2'>
           <span className='text-sm font-normal text-gray-500'>or</span>
           <Link
-            href='/den'
+            href='/3dSecurity'
             className='inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline'
           >
             Continue Shopping

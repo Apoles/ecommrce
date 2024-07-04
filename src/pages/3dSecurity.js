@@ -1,4 +1,4 @@
-import { clear } from '@/Store/cartSlice';
+import { clear } from '@/Store/CartSlice';
 import { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -6,8 +6,6 @@ const OtpForm = () => {
   const [otp, setOtp] = useState(['', '', '', '']);
   const inputs = useRef([]);
   const dispatch = useDispatch();
-
-  const den = useSelector((state) => state.payment);
 
   const ClearBasket = () => {
     dispatch(clear());

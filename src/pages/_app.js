@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import store from '../Store/store'; // Redux store import edildi
 import MainLayout from '@/components/Layout/MainLayout';
 import UserLayout from '@/components/Layout/UserLayout';
-import { checkLoginStatus } from '@/Store/authSlice'; // AuthSlice'tan giriş durumunu kontrol eden aksiyon import edildi
+import { checkLoginStatus } from '@/Store/AuthSlice'; // AuthSlice'tan giriş durumunu kontrol eden aksiyon import edildi
 import MainLoadingSpinner from '@/components/LoadingUi/MainPageLoadingSpinner'; // Ana sayfa yükleme spinner'ı import edildi
 
 // Uygulama içeriği bileşeni

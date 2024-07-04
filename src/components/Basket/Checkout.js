@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import MyInput from '../MyInput';
 import Summary from './Summary';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateFormData, updatePaymentData, updateUserData } from '@/Store/paymentSlice';
+import { updateFormData, updatePaymentData, updateUserData } from '@/Store/PaymentSlice';
 
 const CheckoutCard = () => {
   const dispatch = useDispatch(); // dispatch fonksiyonu oluşturuluyor.
   const cart = useSelector((state) => state.cart); // cart durumu Redux store'dan alınıyor.
   const user = useSelector((state) => state.auth); // user durumu Redux store'dan alınıyor.
   const payment = useSelector((state) => state.payment); // payment durumu Redux store'dan alınıyor.
+
+  console.log('payment', payment);
 
   // formData ve paymentData için useState hook'ları kullanılarak başlangıç durumları tanımlanıyor.
   const [formData, setFormData] = useState({
@@ -367,7 +369,7 @@ const CheckoutCard = () => {
             storePickup={10}
             tax={50}
             title='Complete Purchase'
-            href={'/den'}
+            href={'/3dSecurity'}
             onClick={handleSubmit}
           />{' '}
         </div>

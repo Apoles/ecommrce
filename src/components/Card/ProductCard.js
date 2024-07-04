@@ -2,7 +2,7 @@ import Link from 'next/link';
 import MyButton from '../MyButton';
 import { StarIcon } from '@heroicons/react/24/solid';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchDataById } from '../../Store/cartSlice';
+import { fetchDataById } from '../../Store/CartSlice';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import Notification from './NotificationCard';

@@ -2,8 +2,8 @@
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { saveToLocalStorage, loadFromLocalStorage, saveToLocalStorageTwo } from '../utils/LocalStroge.js';
-import { DiscountPercentage } from '@/utils/disountPercnt.js';
+import { SaveToLocalStorage, LoadFromLocalStorage, saveToLocalStorageTwo } from '../utils/LocalStroge.js';
+import { DiscountPercentage } from '@/utils/DisountPercent.js';
 
 export const fetchDataById = createAsyncThunk('cart/fetchDataById', async (id, thunkAPI) => {
   try {
@@ -14,7 +14,7 @@ export const fetchDataById = createAsyncThunk('cart/fetchDataById', async (id, t
   }
 });
 
-const initialState = loadFromLocalStorage('cart') || {
+const initialState = LoadFromLocalStorage('cart') || {
   data: [],
   totalAmount: 0,
   savings: 0,
@@ -29,7 +29,7 @@ const cartSlice = createSlice({
     add(state, action) {
       state.data.push({ ...action.payload, qty: 1 });
       state.totalAmount = state.data.reduce((total, item) => total + item.price * item.qty, 0);
-      saveToLocalStorage('cart', state);
+      SaveToLocalStorage('cart', state);
     },
     removeAll(state, action) {
       const { id } = action.payload;
@@ -40,7 +40,7 @@ const cartSlice = createSlice({
         0
       );
 
-      saveToLocalStorage('cart', { data: newData, totalAmount: newTotalAmount, savings: newSavings });
+      SaveToLocalStorage('cart', { data: newData, totalAmount: newTotalAmount, savings: newSavings });
       return { data: newData, totalAmount: newTotalAmount };
     },
     remove(state, action) {
@@ -66,14 +66,14 @@ const cartSlice = createSlice({
         0
       );
 
-      saveToLocalStorage('cart', { data: newData, totalAmount: newTotalAmount, savings: newSavings });
+      SaveToLocalStorage('cart', { data: newData, totalAmount: newTotalAmount, savings: newSavings });
       return { data: newData, totalAmount: newTotalAmount, savings: newSavings };
     },
     clear(state) {
       state.data = [];
       state.totalAmount = 0;
 
-      saveToLocalStorage('cart', state);
+      SaveToLocalStorage('cart', state);
     },
   },
   extraReducers: (builder) => {
@@ -96,7 +96,7 @@ const cartSlice = createSlice({
             (total, item) => total + DiscountPercentage(item.price, item.discountPercentage) * item.qty,
             0
           );
-          saveToLocalStorage('cart', state);
+          SaveToLocalStorage('cart', state);
         } else {
           state.data.push({ ...action.payload, qty: 1 });
           state.totalAmount = state.data.reduce((total, item) => total + item.price * item.qty, 0);
@@ -105,7 +105,7 @@ const cartSlice = createSlice({
             0
           );
 
-          saveToLocalStorage('cart', state);
+          SaveToLocalStorage('cart', state);
         }
       })
       .addCase(fetchDataById.rejected, (state, action) => {

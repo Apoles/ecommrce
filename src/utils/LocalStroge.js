@@ -1,6 +1,6 @@
 // src/utils/localStorage.js
 
-export const saveToLocalStorage = (key, value) => {
+export const SaveToLocalStorage = (key, value) => {
   try {
     const serializedState = JSON.stringify(value);
 
@@ -8,7 +8,7 @@ export const saveToLocalStorage = (key, value) => {
   } catch (e) {}
 };
 
-export const loadFromLocalStorage = (key) => {
+export const LoadFromLocalStorage = (key) => {
   try {
     const serializedState = localStorage.getItem(key);
     if (serializedState === null) return undefined;

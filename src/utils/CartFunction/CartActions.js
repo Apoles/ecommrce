@@ -1,4 +1,4 @@
-import { fetchDataById, remove, removeAll } from '@/Store/cartSlice';
+import { fetchDataById, remove, removeAll } from '@/Store/CartSlice';
 
 // removeFromCart function
 export const RemoveFromCart = (dispatch, id) => {
